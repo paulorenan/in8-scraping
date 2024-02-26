@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import puppeteer from 'puppeteer';
 
 @Injectable()
@@ -11,10 +11,13 @@ export class ProductsService {
             page.setDefaultNavigationTimeout(0);
             await page.goto(`https://br.openfoodfacts.org/produto/${product}`);
             const productData = await this.filterProductData(page);
+            if (productData.error) {
+                throw new NotFoundException('Product not found');
+            }
             return productData;
         } catch (error) {
             console.log('error', error);
-            return error;
+            throw error;
         } finally {
             await browser.close();
         }
