@@ -28,6 +28,72 @@ export class ProductsService {
                 return { error: pageError.textContent };
             }
 
+            const palmOilAnalysis = (palmOil) => {
+                switch (palmOil) {
+                    case 'Pode conter óleo de palma':
+                        return 'maybe';
+                    case 'Desconhece-se se contém óleo de palma':
+                        return 'unknown';
+                    case 'Sem óleo de palma':
+                        return false;
+                    case 'Óleo de palma':
+                        return true;
+                    default:
+                        return 'unknown';
+                }
+            }
+
+            const veganAnalysis = (vegan) => {
+                switch (vegan) {
+                    case 'Possivelmente vegano':
+                        return 'maybe';
+                    case 'Desconhece-se se é vegano':
+                        return 'unknown';
+                    case 'Vegano':
+                        return true;
+                    case 'Não vegano':
+                        return false;
+                    default:
+                        return 'unknown';
+                }
+            }
+
+            const vegetarianAnalysis = (vegetarian) => {
+                switch (vegetarian) {
+                    case 'Possivelmente vegetariano':
+                        return 'maybe';
+                    case 'Estado vegetariano desconhecido':
+                        return 'unknown';
+                    case 'Vegetariano':
+                        return true;
+                    case 'Não vegetariano':
+                        return false;
+                    default:
+                        return 'unknown';
+                }
+            }
+
+            const getIngredientsAnalysis = () => {
+                const ingredientsList = document.querySelector('#panel_ingredients_analysis_content').querySelectorAll('ul.panel_accordion');
+                const palmOil = ingredientsList[0].querySelector('.accordion-navigation').getElementsByTagName('h4')[0].textContent.trim();
+                const vegan = ingredientsList[1].querySelector('.accordion-navigation').getElementsByTagName('h4')[0].textContent.trim();
+                const vegetarian = ingredientsList[2].querySelector('.accordion-navigation').getElementsByTagName('h4')[0].textContent.trim();
+                return [palmOilAnalysis(palmOil), veganAnalysis(vegan), vegetarianAnalysis(vegetarian)]
+            }
+
+            const ingredientsAnalysis = getIngredientsAnalysis();
+
+            const getIngredientsList = () => {
+                const ingredientsList = document.querySelector('#panel_ingredients_content').querySelectorAll('div.panel_text');
+                const ingredients = [];
+
+                ingredientsList.forEach(item => {
+                    const ingredient = item.textContent.trim();
+                    ingredients.push(ingredient);
+                });
+                return ingredients.map(item => item.replace(/\n\s+/g, ' ').trim());
+            }
+
             const getNutriValues = () => {
                 const listOfNutriValues = document.querySelector('#panel_nutrient_levels_content').querySelectorAll('ul.panel_accordion');
                 const nutriValues = [];
@@ -71,11 +137,15 @@ export class ProductsService {
                 return serving;
             }
 
-            // return getNutriServings();
-
             return {
                 title: document.querySelector('.title-1').textContent,
                 quantity: document.querySelector('#field_quantity_value').textContent,
+                ingredients: {
+                    hasPalmOil: ingredientsAnalysis[0],
+                    isVegan: ingredientsAnalysis[1],
+                    isVegetarian: ingredientsAnalysis[2],
+                    list: getIngredientsList(),
+                },
                 nutrition: {
                     score: document.querySelector('#attributes_grid').firstElementChild.querySelector('.attr_title').textContent.split(' ')[1],
                     values: getNutriValues(),
