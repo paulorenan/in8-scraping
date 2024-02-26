@@ -24,51 +24,56 @@ export class ProductsService {
     }
 
     async getProductList() {
-        // const browser = await puppeteer.launch();
-        // try {
-        //     const page = await browser.newPage();
-        //     page.setDefaultNavigationTimeout(0);
-        //     await page.goto('https://br.openfoodfacts.org/');
-        //     const productList = await this.filterProductList(page);
-        //     return productList;
-        // } catch (error) {
-        //     console.log('error', error);
-        //     throw error;
-        // } finally {
-        //     await browser.close();
-        // }
+        const browser = await puppeteer.launch();
+        try {
+            const page = await browser.newPage();
+            page.setDefaultNavigationTimeout(0);
+            await page.goto('https://br.openfoodfacts.org/');
+            const productList = await this.filterProductList(page);
+            return productList;
+        } catch (error) {
+            console.log('error', error);
+            throw error;
+        } finally {
+            await browser.close();
+        }
     }
 
     async filterProductList(page) {
-        // const productList = await page.evaluate(() => {
-        //     const products = document.querySelector('.search_results').querySelectorAll('li');
-        //     const productList = [];
+        const productList = await page.evaluate(() => {
+            const productsSelector = document.querySelector('.search_results');
+            if (!productsSelector || productsSelector === null) {
+                return [];
+            }
+            const products = productsSelector.querySelectorAll('.list_product');
 
-        //     const getNovaScore = (product) => {
-        //         const novaScore = product.querySelectorAll('.list_product_icons')[1].getAttribute('title').split(' ')[1]
-        //         if (novaScore === 'não') {
-        //             return 0;
-        //         }
-        //         return parseInt(novaScore);
-        //     }
+            const productList = [];
 
-        //     products.forEach(product => {
-        //         const id = product.querySelector('.list_product_a').getAttribute('href').split('/')[4]
-        //         const name = product.querySelector('.list_product_name').textContent;
-        //         const nutrition = {
-        //             score: product.querySelectorAll('.list_product_icons')[0].getAttribute('title').split(' ')[1],
-        //             title: product.querySelector('.list_product_icons').getAttribute('title').split('-').slice(2).join('-').trim()
-        //         }
-        //         const nova = {
-        //             score: getNovaScore(product),
-        //             title: product.querySelectorAll('.list_product_icons')[1].getAttribute('title').split('-').slice(1).join('-').trim(),
-        //         }
-        //         productList.push({ id, name, nutrition, nova });
-        //     });
-        //     return productList;
-        // });
-        // console.log('productList', productList);
-        // return productList;
+            const getNovaScore = (product) => {
+                const novaScore = product.querySelectorAll('.list_product_icons')[1].getAttribute('title').split(' ')[1]
+                if (novaScore === 'não') {
+                    return 0;
+                }
+                return parseInt(novaScore);
+            }
+
+            products.forEach(product => {
+                const id = product.querySelector('.list_product_a').getAttribute('href').split('/')[4]
+                const name = product.querySelector('.list_product_name').textContent;
+                const nutrition = {
+                    score: product.querySelectorAll('.list_product_icons')[0].getAttribute('title').split(' ')[1],
+                    title: product.querySelector('.list_product_icons').getAttribute('title').split('-').slice(2).join('-').trim()
+                }
+                const nova = {
+                    score: getNovaScore(product),
+                    title: product.querySelectorAll('.list_product_icons')[1].getAttribute('title').split('-').slice(1).join('-').trim(),
+                }
+                productList.push({ id, name, nutrition, nova });
+            });
+            return productList;
+        });
+        console.log('productList', productList);
+        return productList;
     }
 
     async filterProductData(page) {
