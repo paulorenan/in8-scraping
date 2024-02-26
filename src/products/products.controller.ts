@@ -6,6 +6,11 @@ import { Controller, Get, Param, Query } from '@nestjs/common';
 export class ProductsController {
     constructor(private readonly productsService: ProductsService) { }
 
+    @Get()
+    getProductList() {
+        return this.productsService.getProductList();
+    }
+
     @Get(':id')
     getProductDetails(@Param('id') product: string){
         return this.productsService.getProductDetails(product);

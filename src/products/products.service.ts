@@ -23,6 +23,54 @@ export class ProductsService {
         }
     }
 
+    async getProductList() {
+        // const browser = await puppeteer.launch();
+        // try {
+        //     const page = await browser.newPage();
+        //     page.setDefaultNavigationTimeout(0);
+        //     await page.goto('https://br.openfoodfacts.org/');
+        //     const productList = await this.filterProductList(page);
+        //     return productList;
+        // } catch (error) {
+        //     console.log('error', error);
+        //     throw error;
+        // } finally {
+        //     await browser.close();
+        // }
+    }
+
+    async filterProductList(page) {
+        // const productList = await page.evaluate(() => {
+        //     const products = document.querySelector('.search_results').querySelectorAll('li');
+        //     const productList = [];
+
+        //     const getNovaScore = (product) => {
+        //         const novaScore = product.querySelectorAll('.list_product_icons')[1].getAttribute('title').split(' ')[1]
+        //         if (novaScore === 'não') {
+        //             return 0;
+        //         }
+        //         return parseInt(novaScore);
+        //     }
+
+        //     products.forEach(product => {
+        //         const id = product.querySelector('.list_product_a').getAttribute('href').split('/')[4]
+        //         const name = product.querySelector('.list_product_name').textContent;
+        //         const nutrition = {
+        //             score: product.querySelectorAll('.list_product_icons')[0].getAttribute('title').split(' ')[1],
+        //             title: product.querySelector('.list_product_icons').getAttribute('title').split('-').slice(2).join('-').trim()
+        //         }
+        //         const nova = {
+        //             score: getNovaScore(product),
+        //             title: product.querySelectorAll('.list_product_icons')[1].getAttribute('title').split('-').slice(1).join('-').trim(),
+        //         }
+        //         productList.push({ id, name, nutrition, nova });
+        //     });
+        //     return productList;
+        // });
+        // console.log('productList', productList);
+        // return productList;
+    }
+
     async filterProductData(page) {
         const productData = await page.evaluate(() => {
             const pageError = document.querySelector('.if-empty-dnone');
@@ -77,7 +125,11 @@ export class ProductsService {
             }
 
             const getIngredientsAnalysis = () => {
-                const ingredientsList = document.querySelector('#panel_ingredients_analysis_content').querySelectorAll('ul.panel_accordion');
+                const ingredients = document.querySelector('#panel_ingredients_analysis_content')
+                if (!ingredients || ingredients === null) {
+                    return ['unknown', 'unknown', 'unknown'];
+                }
+                const ingredientsList = ingredients.querySelectorAll('ul.panel_accordion');
                 const palmOil = ingredientsList[0].querySelector('.accordion-navigation').getElementsByTagName('h4')[0].textContent.trim();
                 const vegan = ingredientsList[1].querySelector('.accordion-navigation').getElementsByTagName('h4')[0].textContent.trim();
                 const vegetarian = ingredientsList[2].querySelector('.accordion-navigation').getElementsByTagName('h4')[0].textContent.trim();
@@ -87,7 +139,11 @@ export class ProductsService {
             const ingredientsAnalysis = getIngredientsAnalysis();
 
             const getIngredientsList = () => {
-                const ingredientsList = document.querySelector('#panel_ingredients_content').querySelectorAll('div.panel_text');
+                const ingredientsSelector = document.querySelector('#panel_ingredients_content')
+                if (!ingredientsSelector || ingredientsSelector === null) {
+                    return [];
+                }
+                const ingredientsList = ingredientsSelector.querySelectorAll('li');
                 const ingredients = [];
 
                 ingredientsList.forEach(item => {
@@ -98,7 +154,11 @@ export class ProductsService {
             }
 
             const getNutriValues = () => {
-                const listOfNutriValues = document.querySelector('#panel_nutrient_levels_content').querySelectorAll('ul.panel_accordion');
+                const nutriValuesSelector = document.querySelector('#panel_nutrient_levels_content')
+                if (!nutriValuesSelector || nutriValuesSelector === null) {
+                    return [];
+                }
+                const listOfNutriValues = nutriValuesSelector.querySelectorAll('ul.panel_accordion');
                 const nutriValues = [];
     
                 listOfNutriValues.forEach(item => {
@@ -112,6 +172,9 @@ export class ProductsService {
 
             const getNutriData = () => {
                     const table = document.querySelector('table[aria-label="Dados nutricionais"]');
+                    if (!table) {
+                        return {}
+                    }
                     const data = {};
                     const lines = table.querySelectorAll('tbody tr');
 
@@ -130,6 +193,9 @@ export class ProductsService {
 
             const getNutriServings = () => {
                 const table = document.querySelector('table[aria-label="Dados nutricionais"]');
+                if (!table) {
+                    return ''
+                }
                 const thLength = table.querySelectorAll('thead th').length;
                 
                 if (thLength < 4) {
@@ -140,9 +206,16 @@ export class ProductsService {
                 return serving;
             }
 
+            const checkIfNotNull = (element) => {
+                if (!element) {
+                    return '';
+                }
+                return element.textContent.trim();
+            }
+
             return {
                 title: document.querySelector('.title-1').textContent,
-                quantity: document.querySelector('#field_quantity_value').textContent,
+                quantity: checkIfNotNull(document.querySelector('#field_quantity_value')),
                 ingredients: {
                     hasPalmOil: ingredientsAnalysis[0],
                     isVegan: ingredientsAnalysis[1],
@@ -156,8 +229,8 @@ export class ProductsService {
                     data: getNutriData(),
                 },
                 nova: {
-                    score: document.querySelector('#attributes_grid').getElementsByTagName('li')[1].querySelector('.attr_title').textContent.split(' ')[1],
-                    title: document.querySelector('#attributes_grid').getElementsByTagName('span')[1].textContent,
+                    score: parseInt(document.querySelector('#attributes_grid').getElementsByTagName('li')[1].querySelector('.attr_title').textContent.split(' ')[1]),
+                    title: checkIfNotNull(document.querySelector('#attributes_grid').getElementsByTagName('span')[1]),
                 }
             };
         });
