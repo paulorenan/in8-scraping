@@ -23,14 +23,15 @@ export class ProductsService {
         }
     }
 
-    async getProductList() {
+    async getProductList(nutrition: string, nova: number) {
         const browser = await puppeteer.launch();
         try {
             const page = await browser.newPage();
             page.setDefaultNavigationTimeout(0);
-            await page.goto('https://br.openfoodfacts.org/');
+            const url = 'https://br.openfoodfacts.org/'
+            await page.goto(url);
             const productList = await this.filterProductList(page);
-            return productList;
+            return this.filterProducts(productList, nutrition, nova);
         } catch (error) {
             console.log('error', error);
             throw error;
@@ -39,14 +40,38 @@ export class ProductsService {
         }
     }
 
+    filterProducts(productList, nutrition, nova) {
+        if (nutrition && nova) {
+            return this.filterProductsNovaAndNutritionScore(productList, nutrition, nova);
+        }
+        if (nutrition) {
+            return this.filterProductsNutritionScore(productList, nutrition);
+        }
+        if (nova) {
+            return this.filterProductsNovaScore(productList, nova);
+        }
+        return productList;
+    }
+
+    filterProductsNovaScore(productList, nova) {
+        return productList.filter(product => product.nova.score === parseInt(nova));
+    }
+
+    filterProductsNutritionScore(productList, nutrition) {
+        return productList.filter(product => product.nutrition.score.toLowerCase() === nutrition.toLowerCase());
+    }
+
+    filterProductsNovaAndNutritionScore(productList, nutrition, nova) {
+        return productList.filter(product => product.nutrition.score.toLowerCase() === nutrition.toLowerCase() && product.nova.score === parseInt(nova));
+    }
+
     async filterProductList(page) {
         const productList = await page.evaluate(() => {
-            const productsSelector = document.querySelector('.search_results');
+            const productsSelector = document.querySelector('.search_results')
             if (!productsSelector || productsSelector === null) {
                 return [];
             }
-            const products = productsSelector.querySelectorAll('.list_product');
-
+            const products = productsSelector.querySelectorAll('li');
             const productList = [];
 
             const getNovaScore = (product) => {
