@@ -4,7 +4,6 @@ import puppeteer from 'puppeteer';
 @Injectable()
 export class ProductsService {
     async getProductDetails(product: string) {
-        console.log('called');
         const browser = await puppeteer.launch();
         try {
             const page = await browser.newPage();
@@ -16,7 +15,7 @@ export class ProductsService {
             }
             return productData;
         } catch (error) {
-            console.log('error', error);
+            console.error('error', error);
             throw error;
         } finally {
             await browser.close();
@@ -33,7 +32,7 @@ export class ProductsService {
             const productList = await this.filterProductList(page);
             return this.filterProducts(productList, nutrition, nova);
         } catch (error) {
-            console.log('error', error);
+            console.error('error', error);
             throw error;
         } finally {
             await browser.close();
