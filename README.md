@@ -1,73 +1,70 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# IN8 Web Scraping de Produtos Open Food
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Este é um projeto construído com NestJS, uma estrutura para criação de aplicativos da web Node.js eficientes, e utiliza o Puppeteer para realizar web scraping da página da web Open Food Facts. A aplicação expõe uma API RESTful que permite recuperar uma lista de produtos disponíveis, bem como detalhes de um produto específico com base em seu ID. Além disso, é possível filtrar os resultados da lista de produtos com base no escore de nutrição (nutrition) ou no escore NOVA (nova score), passando esses parâmetros na query da solicitação.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Pré-requisitos
 
-## Description
+Antes de começar, verifique se você atende aos seguintes requisitos:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- Node.js instalado na sua máquina
+- npm ou yarn instalados na sua máquina
+- Um navegador instalado (necessário para o Puppeteer)
 
-## Installation
+## Como Usar
 
-```bash
-$ npm install
+Clone este repositório:
+
+```
+git clone https://github.com/paulorenan/in8-scraping.git
 ```
 
-## Running the app
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+Instale as dependências:
+```
+cd in8-scraping
+npm install
 ```
 
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+Execute o servidor:
+```
+npm start
 ```
 
-## Support
+Isso iniciará o servidor e sua API estará acessível em `http://localhost:3000`.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Testes
 
-## Stay in touch
+Para executar os testes, execute o seguinte comando:
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```
+npm run test
+```
 
-## License
 
-Nest is [MIT licensed](LICENSE).
+Isso executará todos os testes no projeto.
+
+
+## Endpoints Disponíveis
+
+- GET /products: Retorna uma lista de produtos. Você pode filtrar os resultados passando os parâmetros nutrition ou nova na query da solicitação.
+
+- GET /products/{id}: Retorna os detalhes de um produto específico com base em seu ID.
+
+## Documentação da API
+
+A documentação da API é gerada automaticamente utilizando o Swagger, fornecendo uma maneira fácil e intuitiva de explorar e entender os endpoints disponíveis, bem como os parâmetros que podem ser utilizados para filtrar os resultados. Acesse a documentação em http://localhost:3000/swagger.
+
+Este projeto demonstra como usar tecnologias como NestJS, Puppeteer e Swagger para criar uma aplicação eficiente que realiza web scraping para obter dados de uma página da web específica e fornece uma interface de API bem documentada para acessar e interagir com esses dados de forma flexível e conveniente.
+
+## Principais Desafios Enfrentados
+
+Durante o desenvolvimento deste projeto, alguns desafios significativos foram encontrados, cada um exigindo soluções criativas e esforço extra para serem superados.
+
+1. **Web Scraping Detalhado de Dados Específicos:** Um dos principais desafios foi realizar o scraping de dados específicos dos detalhes do produto, como os valores de nutrição (nutrition values). Foi necessário implementar filtros e manipulação de dados para garantir que os valores fossem recuperados e formatados corretamente antes de serem enviados como resposta.
+
+2. **Extração de Dados de Tabelas:** A extração de dados de tabelas, como a tabela de valores de nutrição, representou outro desafio. Foi necessário criar uma lógica para filtrar e manipular os dados extraídos da tabela, garantindo que eles fossem apresentados de forma precisa e legível para o usuário final.
+
+3. **Implementação de Filtros na URL:** Inicialmente, a implementação de filtros na URL para realizar consultas específicas no site do Open Food Facts foi considerada. No entanto, encontrar uma maneira eficaz de filtrar os resultados com base nos parâmetros de nutrição (nutrition) e escore NOVA (nova score) diretamente na URL provou ser desafiador. Como solução alternativa, foi necessário implementar a lógica de filtragem na aplicação antes de enviar os resultados para o usuário, quando os parâmetros de filtro eram fornecidos.
+
+Esses desafios foram superados por meio de uma combinação de pesquisa, experimentação e desenvolvimento iterativo, resultando em uma aplicação robusta e funcional que atende aos requisitos especificados.
+
