@@ -1,6 +1,6 @@
 # IN8 Web Scraping de Produtos Open Food
 
-Este é um projeto construído com NestJS, uma estrutura para criação de aplicativos da web Node.js eficientes, e utiliza o Puppeteer para realizar web scraping da página da web Open Food Facts. A aplicação expõe uma API RESTful que permite recuperar uma lista de produtos disponíveis, bem como detalhes de um produto específico com base em seu ID. Além disso, é possível filtrar os resultados da lista de produtos com base no escore de nutrição (nutrition) ou no escore NOVA (nova score), passando esses parâmetros na query da solicitação.
+Este é um projeto construído com NestJS, uma estrutura para criação de aplicativos da web Node.js eficientes, e utiliza o Puppeteer para realizar web scraping da página da web Open Food Facts (https://br.openfoodfacts.org). A aplicação expõe uma API RESTful que permite recuperar uma lista de produtos disponíveis, bem como detalhes de um produto específico com base em seu ID. Além disso, é possível filtrar os resultados da lista de produtos com base no escore de nutrição (nutrition) ou no escore NOVA (nova score), passando esses parâmetros na query da solicitação.
 
 ## Pré-requisitos
 
