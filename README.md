@@ -52,7 +52,7 @@ Isso executará todos os testes no projeto.
 
 ## Documentação da API
 
-A documentação da API é gerada automaticamente utilizando o Swagger, fornecendo uma maneira fácil e intuitiva de explorar e entender os endpoints disponíveis, bem como os parâmetros que podem ser utilizados para filtrar os resultados. Acesse a documentação em http://localhost:3000/swagger.
+A documentação da API é gerada automaticamente utilizando o Swagger, fornecendo uma maneira fácil e intuitiva de explorar e entender os endpoints disponíveis, bem como os parâmetros que podem ser utilizados para filtrar os resultados. Acesse a documentação em http://localhost:3000/api.
 
 Este projeto demonstra como usar tecnologias como NestJS, Puppeteer e Swagger para criar uma aplicação eficiente que realiza web scraping para obter dados de uma página da web específica e fornece uma interface de API bem documentada para acessar e interagir com esses dados de forma flexível e conveniente.
 
